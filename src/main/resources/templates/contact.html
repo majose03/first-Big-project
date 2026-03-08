@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title th:text="${pageTitle}">Contact Us — BakeryHub</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"/>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div th:replace="~{layout/base :: navbar}"></div>
+
+<!-- Header -->
+<div style="background:linear-gradient(135deg,var(--dark),var(--dark-2));padding:3rem 0">
+  <div class="container text-center">
+    <h1 style="font-family:'Playfair Display',serif;color:#fff;font-size:2.5rem;font-weight:700">Get in Touch</h1>
+    <p style="color:rgba(255,255,255,.65);margin-top:.5rem">Custom cakes, bookings, or just to say hello — we'd love to hear from you!</p>
+  </div>
+</div>
+
+<section class="section-pad">
+  <div class="container">
+    <div class="row g-5">
+
+      <!-- Info Cards -->
+      <div class="col-lg-4">
+        <h3 style="font-family:'Playfair Display',serif;font-weight:700;margin-bottom:1.5rem">Visit Us</h3>
+        <div class="d-flex flex-column gap-4">
+          <div style="display:flex;gap:1rem;align-items:flex-start">
+            <div style="width:42px;height:42px;background:var(--primary);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;flex-shrink:0">
+              <i class="bi bi-geo-alt-fill"></i>
+            </div>
+            <div>
+              <div style="font-weight:600;margin-bottom:.2rem">Our Bakery</div>
+              <div style="color:var(--text-muted);font-size:.9rem">12, Baker Street<br>Mumbai 400 001, India</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:1rem;align-items:flex-start">
+            <div style="width:42px;height:42px;background:var(--primary);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;flex-shrink:0">
+              <i class="bi bi-telephone-fill"></i>
+            </div>
+            <div>
+              <div style="font-weight:600;margin-bottom:.2rem">Call Us</div>
+              <div style="color:var(--text-muted);font-size:.9rem">+91 98765 43210<br>Mon–Sat, 9AM–7PM</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:1rem;align-items:flex-start">
+            <div style="width:42px;height:42px;background:var(--primary);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;flex-shrink:0">
+              <i class="bi bi-envelope-fill"></i>
+            </div>
+            <div>
+              <div style="font-weight:600;margin-bottom:.2rem">Email Us</div>
+              <div style="color:var(--text-muted);font-size:.9rem">hello@bakeryhub.com<br>We reply within 24h</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:1rem;align-items:flex-start">
+            <div style="width:42px;height:42px;background:var(--primary);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;flex-shrink:0">
+              <i class="bi bi-clock-fill"></i>
+            </div>
+            <div>
+              <div style="font-weight:600;margin-bottom:.2rem">Hours</div>
+              <div style="color:var(--text-muted);font-size:.9rem">Mon–Fri: 8AM–8PM<br>Sat–Sun: 9AM–6PM</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="col-lg-8">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:2.5rem;box-shadow:var(--shadow-sm)">
+          <div th:if="${successMessage}" class="alert-bakeryhub alert-success-custom">
+            <i class="bi bi-check-circle-fill me-2"></i><span th:text="${successMessage}"></span>
+          </div>
+
+          <h3 style="font-family:'Playfair Display',serif;font-weight:700;margin-bottom:.3rem">Send a Message</h3>
+          <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:1.8rem">For custom orders, bookings, or any enquiry</p>
+
+          <form th:action="@{/contact}" method="post" th:object="${contact}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label style="font-weight:600;font-size:.92rem;margin-bottom:.4rem;display:block">Full Name *</label>
+                <input type="text" th:field="*{name}" class="form-control-custom" placeholder="Your name"/>
+                <div th:if="${#fields.hasErrors('name')}" style="color:var(--danger);font-size:.8rem;margin-top:.3rem"
+                     th:errors="*{name}"></div>
+              </div>
+              <div class="col-sm-6">
+                <label style="font-weight:600;font-size:.92rem;margin-bottom:.4rem;display:block">Email *</label>
+                <input type="email" th:field="*{email}" class="form-control-custom" placeholder="your@email.com"/>
+                <div th:if="${#fields.hasErrors('email')}" style="color:var(--danger);font-size:.8rem;margin-top:.3rem"
+                     th:errors="*{email}"></div>
+              </div>
+              <div class="col-sm-6">
+                <label style="font-weight:600;font-size:.92rem;margin-bottom:.4rem;display:block">Phone</label>
+                <input type="tel" th:field="*{phone}" class="form-control-custom" placeholder="+91 XXXXX XXXXX"/>
+              </div>
+              <div class="col-sm-6">
+                <label style="font-weight:600;font-size:.92rem;margin-bottom:.4rem;display:block">Subject *</label>
+                <input type="text" th:field="*{subject}" class="form-control-custom" placeholder="e.g. Birthday Cake Order"/>
+                <div th:if="${#fields.hasErrors('subject')}" style="color:var(--danger);font-size:.8rem;margin-top:.3rem"
+                     th:errors="*{subject}"></div>
+              </div>
+              <div class="col-12">
+                <label style="font-weight:600;font-size:.92rem;margin-bottom:.4rem;display:block">Message *</label>
+                <textarea th:field="*{message}" class="form-control-custom" rows="5"
+                          placeholder="Tell us about your order, flavour preferences, event date…"
+                          style="resize:vertical"></textarea>
+                <div th:if="${#fields.hasErrors('message')}" style="color:var(--danger);font-size:.8rem;margin-top:.3rem"
+                     th:errors="*{message}"></div>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn-primary-custom" style="width:auto;padding:.75rem 2.5rem">
+                  <i class="bi bi-send-fill me-2"></i>Send Message
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div th:replace="~{layout/base :: footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

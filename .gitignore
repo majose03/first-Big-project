@@ -1,0 +1,29 @@
+# Maven build output
+target/
+*.jar
+*.war
+*.class
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+.metadata/
+.settings/
+.classpath
+.project
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Sensitive config (never commit secrets!)
+application-prod.properties
+application-secret.properties
+
+# Logs
+*.log
+logs/
+
+# Node (if any)
+node_modules/

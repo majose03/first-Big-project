@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="BakeryHub – Premium handcrafted cakes, brownies & more delivered to your door."/>
+  <title th:text="${pageTitle} ?: 'BakeryHub — Premium Cakes & Brownies'">BakeryHub</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"/>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<!-- Navbar -->
+<div th:replace="~{layout/base :: navbar}"></div>
+
+<!-- ── Hero Section ──────────────────────────── -->
+<section class="hero-section">
+  <div class="container position-relative" style="z-index:2">
+    <div class="row">
+      <div class="col-lg-7">
+        <div class="hero-badge">✨ Freshly Baked Daily</div>
+        <h1 class="hero-title">
+          Taste the<br><span class="highlight">Artisan</span><br>Difference
+        </h1>
+        <p class="hero-subtitle">
+          Handcrafted cakes, fudgy brownies, and dreamy pastries made from
+          the finest ingredients — delivered fresh to your doorstep.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <a th:href="@{/products}" class="btn-hero-primary">
+            <i class="bi bi-grid3x3-gap-fill"></i> Shop Now
+          </a>
+          <a th:href="@{/contact}" class="btn-hero-secondary">
+            <i class="bi bi-calendar2-heart"></i> Book a Cake
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-num">500+</div>
+            <div class="hero-stat-label">Happy Clients</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">50+</div>
+            <div class="hero-stat-label">Flavours</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">7</div>
+            <div class="hero-stat-label">Years Baking</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Why Choose Us ─────────────────────────── -->
+<section class="section-pad-sm" style="background:#fff">
+  <div class="container">
+    <div class="row g-4 text-center">
+      <div class="col-sm-6 col-lg-3">
+        <div class="p-3">
+          <div style="font-size:2.5rem;margin-bottom:.7rem">🌿</div>
+          <h5 style="font-family:'Playfair Display',serif;font-weight:600">Fresh Ingredients</h5>
+          <p style="color:var(--text-muted);font-size:.9rem">Sourced locally, used daily. No preservatives, ever.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="p-3">
+          <div style="font-size:2.5rem;margin-bottom:.7rem">🚚</div>
+          <h5 style="font-family:'Playfair Display',serif;font-weight:600">Same-Day Delivery</h5>
+          <p style="color:var(--text-muted);font-size:.9rem">Order before noon, get it by evening. Fresh, always.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="p-3">
+          <div style="font-size:2.5rem;margin-bottom:.7rem">🎂</div>
+          <h5 style="font-family:'Playfair Display',serif;font-weight:600">Custom Orders</h5>
+          <p style="color:var(--text-muted);font-size:.9rem">Your vision, our craft. Fully customised cakes for every occasion.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="p-3">
+          <div style="font-size:2.5rem;margin-bottom:.7rem">⭐</div>
+          <h5 style="font-family:'Playfair Display',serif;font-weight:600">4.9★ Rated</h5>
+          <p style="color:var(--text-muted);font-size:.9rem">Over 1,000 five-star reviews from delighted customers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Featured Products ──────────────────────── -->
+<section class="section-pad">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">Our Best Sellers</h2>
+      <p class="section-subtitle mt-2">Crowd-pleasing favourites, freshly baked every morning</p>
+    </div>
+
+    <!-- Flash Message -->
+    <div th:if="${successMessage}" class="alert-bakeryhub alert-success-custom">
+      <i class="bi bi-check-circle-fill me-2"></i><span th:text="${successMessage}"></span>
+    </div>
+
+    <div class="row g-4" th:if="${featuredProducts != null and !featuredProducts.isEmpty()}">
+      <div class="col-sm-6 col-lg-4" th:each="product : ${featuredProducts}">
+        <div class="product-card">
+          <div class="product-card-img-wrap">
+            <img th:if="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)}"
+                 th:src="${product.imageUrl}" th:alt="${product.name}" loading="lazy"/>
+            <div th:unless="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)}"
+                 class="product-img-placeholder">🍰</div>
+            <span th:if="${product.bestSeller}" class="product-badge badge-bestseller">★ Best Seller</span>
+            <span th:if="${product.eggless}" class="product-badge badge-eggless" style="top:44px">Eggless</span>
+          </div>
+          <div class="product-card-body">
+            <div class="product-card-title" th:text="${product.name}">Product Name</div>
+            <div class="product-card-desc" th:text="${product.description}">Description…</div>
+            <div class="product-card-price">
+              ₹<span th:text="${#numbers.formatDecimal(product.price, 1, 2)}">0.00</span>
+              <small> / piece</small>
+            </div>
+          </div>
+          <div class="product-card-footer">
+            <form th:action="@{/cart/add}" method="post" style="flex:1">
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+              <input type="hidden" name="productId" th:value="${product.id}"/>
+              <input type="hidden" name="quantity" value="1"/>
+              <button type="submit" class="btn-add-cart" data-cart-btn>
+                <i class="bi bi-cart-plus"></i> Add to Cart
+              </button>
+            </form>
+            <a th:href="@{/products/{id}(id=${product.id})}" class="btn-view-detail" title="View Details">
+              <i class="bi bi-eye"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div th:if="${featuredProducts == null or featuredProducts.isEmpty()}" class="text-center py-5">
+      <div style="font-size:4rem">🍰</div>
+      <p class="text-muted mt-3">No products yet — check back soon!</p>
+    </div>
+
+    <div class="text-center mt-5">
+      <a th:href="@{/products}" class="btn-hero-primary">
+        <i class="bi bi-grid3x3-gap-fill me-2"></i>View All Products
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Category Showcase ──────────────────────── -->
+<section class="section-pad-sm" style="background: linear-gradient(135deg, #fdf0e8, #fff9f5)">
+  <div class="container">
+    <div class="text-center mb-4">
+      <h2 class="section-title">Shop by Category</h2>
+    </div>
+    <div class="row g-3 justify-content-center">
+      <div class="col-6 col-sm-4 col-lg-2" th:each="cat,idx : ${ {'Cake','Brownie','Cupcake','Cookie','Pastry','Eggless'} }">
+        <a th:href="@{/products(filter=${cat})}"
+           class="d-block text-center text-decoration-none p-3"
+           style="background:#fff;border-radius:16px;border:1.5px solid var(--border);transition:all 0.3s ease"
+           onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-4px)'"
+           onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)'">
+          <div style="font-size:2.2rem" th:text="${idx.index == 0 ? '🎂' : idx.index == 1 ? '🍫' : idx.index == 2 ? '🧁' : idx.index == 3 ? '🍪' : idx.index == 4 ? '🥐' : '🌿'}">🎂</div>
+          <div style="font-size:.85rem;font-weight:600;color:var(--text-main);margin-top:.5rem" th:text="${cat}">Cake</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<div th:replace="~{layout/base :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

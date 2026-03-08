@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" th:content="${metaDesc} ?: 'BakeryHub – Premium handcrafted cakes, brownies & more delivered to your door.'"/>
+  <title th:text="${pageTitle} ?: 'BakeryHub — Premium Cakes & Brownies'">BakeryHub</title>
+
+  <!-- Bootstrap 5.2 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"/>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════════════════════║
+     ║  NAVBAR FRAGMENT                                 ║
+     ╚══════════════════════════════════════════════════╝ -->
+<nav class="navbar-bakeryhub" th:fragment="navbar">
+  <div class="container">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+
+      <!-- Brand -->
+      <a class="navbar-brand-logo" th:href="@{/}">
+        🍰 Bakery<span>Hub</span>
+      </a>
+
+      <!-- Search Bar -->
+      <form class="search-form-navbar" th:action="@{/products}" method="get">
+        <input type="text" name="search" placeholder="Search cakes, brownies…"
+               th:value="${currentSearch}" autocomplete="off" id="navbarSearch"/>
+        <button type="submit"><i class="bi bi-search"></i></button>
+      </form>
+
+      <!-- Nav Links -->
+      <ul class="nav align-items-center gap-1 flex-wrap">
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/products}">Products</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/contact}">Contact</a>
+        </li>
+
+        <!-- Admin link (only if ADMIN) -->
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+          <a class="nav-link" th:href="@{/admin}">
+            <i class="bi bi-shield-lock-fill me-1"></i>Admin
+          </a>
+        </li>
+
+        <!-- Auth links -->
+        <li class="nav-item" sec:authorize="isAnonymous()">
+          <a class="nav-link" th:href="@{/auth/login}">Login</a>
+        </li>
+        <li class="nav-item" sec:authorize="isAuthenticated()">
+          <form th:action="@{/auth/logout}" method="post" class="d-inline">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit" class="nav-link bg-transparent border-0" style="cursor:pointer">
+              <i class="bi bi-box-arrow-right me-1"></i>Logout
+            </button>
+          </form>
+        </li>
+
+        <!-- Cart -->
+        <li class="nav-item ms-1">
+          <a class="nav-link cart-btn-nav" th:href="@{/cart}">
+            <i class="bi bi-cart3"></i> Cart
+            <span class="cart-badge" th:text="${cartCount} ?: 0">0</span>
+          </a>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<!-- ╔══════════════════════════════════════════════════║
+     ║  FOOTER FRAGMENT                                 ║
+     ╚══════════════════════════════════════════════════╝ -->
+<footer class="footer-dark" th:fragment="footer">
+  <div class="container">
+    <div class="row g-5">
+
+      <!-- Brand Column -->
+      <div class="col-lg-4">
+        <div class="footer-brand-name mb-2">🍰 BakeryHub</div>
+        <p style="font-size:.88rem;line-height:1.7;">
+          Crafted with love since 2018. Every cake, every brownie,
+          made fresh to order using the finest ingredients.
+        </p>
+        <div class="mt-3">
+          <a href="#" class="social-icon" title="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="social-icon" title="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="social-icon" title="Twitter"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" class="social-icon" title="YouTube"><i class="bi bi-youtube"></i></a>
+        </div>
+        <!-- Address -->
+        <p class="mt-3" style="font-size:.82rem;color:rgba(255,255,255,.5)">
+          <i class="bi bi-geo-alt-fill me-1" style="color:var(--accent)"></i>
+          12, Baker Street, Mumbai 400 001, India
+        </p>
+        <p style="font-size:.82rem;color:rgba(255,255,255,.5)">
+          <i class="bi bi-telephone-fill me-1" style="color:var(--accent)"></i>
+          +91 98765 43210
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="col-sm-6 col-lg-2">
+        <div class="footer-heading">Quick Links</div>
+        <a class="footer-link" th:href="@{/}">Home</a>
+        <a class="footer-link" th:href="@{/products}">All Products</a>
+        <a class="footer-link" th:href="@{/products(filter='best-sellers')}">Best Sellers</a>
+        <a class="footer-link" th:href="@{/products(filter='eggless')}">Eggless</a>
+        <a class="footer-link" th:href="@{/products(filter='gluten-free')}">Gluten-Free</a>
+        <a class="footer-link" th:href="@{/contact}">Contact</a>
+      </div>
+
+      <!-- Categories -->
+      <div class="col-sm-6 col-lg-2">
+        <div class="footer-heading">Categories</div>
+        <a class="footer-link" th:href="@{/products(filter='Cake')}">Cakes</a>
+        <a class="footer-link" th:href="@{/products(filter='Brownie')}">Brownies</a>
+        <a class="footer-link" th:href="@{/products(filter='Cupcake')}">Cupcakes</a>
+        <a class="footer-link" th:href="@{/products(filter='Cookie')}">Cookies</a>
+        <a class="footer-link" th:href="@{/products(filter='Pastry')}">Pastries</a>
+      </div>
+
+      <!-- Newsletter -->
+      <div class="col-lg-4">
+        <div class="footer-heading">Stay Updated</div>
+        <p style="font-size:.85rem;margin-bottom:1rem;">
+          Subscribe for exclusive deals, new flavours & seasonal specials!
+        </p>
+        <div class="d-flex">
+          <input type="email" class="newsletter-input" placeholder="Your email address"/>
+          <button class="newsletter-btn">Subscribe</button>
+        </div>
+        <p class="mt-3" style="font-size:.78rem;color:rgba(255,255,255,.4)">
+          🔒 We respect your privacy. No spam ever.
+        </p>
+      </div>
+
+    </div>
+
+    <hr class="footer-divider"/>
+    <div class="d-flex flex-wrap justify-content-between align-items-center footer-bottom gap-2">
+      <span>© 2025 BakeryHub. All rights reserved.</span>
+      <span>Made with ❤️ &amp; lots of sugar</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ── Scripts ─────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>
