@@ -1,6 +1,6 @@
 # 🎂 CRUMB 2.0 — Artisan Bakery Web App
 
-> **Full-stack bakery e-commerce app** — Spring Boot 3 + MongoDB + Vanilla JS  
+> **Full-stack bakery e-commerce app** — Spring Boot 3 + MySQL + Vanilla JS  
 > Artisan cakes & brownies from Bangalore. Zero preservatives. Pure obsession.
 
 ---
@@ -8,11 +8,11 @@
 ## ✨ Features
 
 ### 🛍️ Customer Storefront
-- **Live product menu** loaded from MongoDB via REST API
+- **Live product menu** loaded from MySQL via REST API
 - **Category filter tabs** — Brownies, Cakes, Cupcakes, Specials
 - **Shopping cart** with persistent localStorage, quantity controls, live total
 - **Order form** with cart summary, special notes, delivery date
-- **Order submission** — saves to MongoDB, returns Order ID
+- **Order submission** — saves to MySQL, returns Order ID
 - Smooth scroll navigation, review cards, responsive footer
 
 ### 🔒 Admin Panel (`/admin-login.html`)
@@ -30,8 +30,8 @@
 | Layer | Technology |
 |-------|-----------|
 | Backend | Java 17, Spring Boot 3.2 |
-| Database | MongoDB (local or Atlas) |
-| ORM | Spring Data MongoDB |
+| Database | MySQL |
+| ORM | Spring Data JPA |
 | Validation | Jakarta Bean Validation |
 | Frontend | HTML5, Vanilla CSS, Vanilla JS |
 | Build | Maven |
@@ -76,7 +76,7 @@ cake-brownie-shop/
 ### Prerequisites
 - Java 17+
 - Maven 3.6+
-- MongoDB (local `localhost:27017` or Atlas URI)
+- MySQL Server (running on localhost:3306)
 
 ### 1. Clone the repo
 ```bash
@@ -84,20 +84,14 @@ git clone https://github.com/majose03/cake-brownie-shop.git
 cd cake-brownie-shop
 ```
 
-### 2. Configure MongoDB
+### 2. Configure MySQL
 
-**Option A — Local MongoDB (default):**  
-Just make sure MongoDB is running on your machine. No config needed.
-
-**Option B — MongoDB Atlas:**  
-Set environment variable:
-```bash
-# Windows PowerShell
-$env:MONGO_URI = "mongodb+srv://user:pass@cluster.mongodb.net/crumbdb"
-
-# Linux / Mac
-export MONGO_URI="mongodb+srv://user:pass@cluster.mongodb.net/crumbdb"
+Ensure your local MySQL server is running. Create a database named `bakerydb`:
+```sql
+CREATE DATABASE bakerydb;
 ```
+
+The application is pre-configured to log in as user `root` with password `root`. Update `src/main/resources/application.properties` if your credentials differ.
 
 ### 3. Run the app
 ```bash
@@ -196,10 +190,10 @@ GET http://localhost:8080/api/orders/health
 
 ## 🗄️ Database
 
-- **Type:** MongoDB (NoSQL)
-- **Database name:** `crumbdb`
-- **Collections:** `products`, `orders`
-- **View data:** Use [MongoDB Compass](https://www.mongodb.com/products/compass) → connect to `mongodb://localhost:27017`
+- **Type:** MySQL (Relational)
+- **Database name:** `bakerydb`
+- **Tables:** `products`, `orders`
+- **View data:** Use [MySQL Workbench](https://www.mysql.com/products/workbench/) or DBeaver → connect to `jdbc:mysql://localhost:3306/bakerydb`
 
 ---
 

@@ -2,25 +2,26 @@ package com.crumb.bakery.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-@Document(collection = "orders")
+@Entity
+@Table(name = "orders")
 public class Order {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotBlank(message = "Name is required")
     @Size(min = 2, max = 80)
     private String name;
 
     @NotBlank(message = "Phone is required")
-    @Pattern(regexp = "^[+]?[0-9]{10,15}$", message = "Invalid phone number")
+    @Pattern(regexp = "^[0-9]{10}$", message = "Phone must be exactly 10 digits with no spaces")
     private String phone;
 
     @Email(message = "Valid email required")

@@ -16,7 +16,7 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         if (productRepository.count() == 0) {
-            System.out.println("🌱 Seeding CRUMB 2.0 menu into MongoDB...");
+            System.out.println("🌱 Seeding CRUMB 2.0 menu into Local Database...");
             productRepository.saveAll(List.of(
                 new Product("Dark Chocolate Fudge Brownie",
                     "Belgian 70% dark chocolate, real butter, flaky sea salt — dense, fudgy, obsessive.",
@@ -60,7 +60,7 @@ public class DataInitializer implements CommandLineRunner {
             ));
             System.out.println("✅ Seeded " + productRepository.count() + " products!");
         } else {
-            System.out.println("📦 Menu already loaded — " + productRepository.count() + " products in MongoDB.");
+            System.out.println("📦 Menu already loaded — " + productRepository.count() + " products in Local Database.");
         }
     }
 }

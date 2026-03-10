@@ -299,7 +299,7 @@ footer{background:var(--bg2);border-top:1px solid var(--gb);padding:52px 5% 28px
         <form id="orderForm">
           <div class="frow">
             <div class="fg"><label>Full Name *</label><input type="text" id="fname" placeholder="Your name" required/></div>
-            <div class="fg"><label>Phone *</label><input type="tel" id="fphone" placeholder="+91 98765 43210" required/></div>
+            <div class="fg"><label>Phone (10 digits) *</label><input type="tel" id="fphone" pattern="[0-9]{10}" maxlength="10" placeholder="9876543210" title="Exactly 10 digits with no spaces" required/></div>
           </div>
           <div class="fg"><label>Email *</label><input type="email" id="femail" placeholder="you@example.com" required/></div>
           <!-- Hidden inputs for item/price — set automatically from cart -->

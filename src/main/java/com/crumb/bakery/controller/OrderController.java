@@ -32,7 +32,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOrder(@PathVariable String id) {
+    public ResponseEntity<?> getOrder(@PathVariable Long id) {
         return orderService.getOrderById(id).map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
     }
@@ -48,7 +48,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestParam String status) {
+    public ResponseEntity<?> updateStatus(@PathVariable Long id, @RequestParam String status) {
         try {
             Order updated = orderService.updateStatus(id, status);
             return ResponseEntity.ok(Map.of("success", true, "orderId", id, "newStatus", updated.getStatus()));
@@ -60,7 +60,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String,Object>> deleteOrder(@PathVariable String id) {
+    public ResponseEntity<Map<String,Object>> deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);
         return ResponseEntity.ok(Map.of("success", true, "message", "Order deleted"));
     }
@@ -77,7 +77,7 @@ public class OrderController {
     public ResponseEntity<Map<String,Object>> health() {
         return ResponseEntity.ok(Map.of(
             "status", "UP",
-            "service", "CRUMB 2.0 — MongoDB",
+            "service", "CRUMB 2.0 — Local Database",
             "totalOrders", orderService.getTotalOrderCount(),
             "timestamp", new Date()
         ));

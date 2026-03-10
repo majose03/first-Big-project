@@ -14,8 +14,8 @@ When you run `mvn spring-boot:run` or start the app in your IDE, this is the exa
 * **How it works:** It calls `SpringApplication.run(...)`. This tells Spring Boot to wake up, look at all your code, and start assembling the application.
 
 ### Step 2: `pom.xml` & `application.properties`
-* Before Java even starts properly, **Maven** looks at `pom.xml` to download Tomcat (the hidden web server) and MongoDB drivers.
-* Spring Boot then reads `application.properties` (in `src/main/resources`). It finds the port `server.port=8080` (if set) and connects to MongoDB using `spring.data.mongodb.uri`.
+* Before Java even starts properly, **Maven** looks at `pom.xml` to download Tomcat (the hidden web server) and MySQL drivers.
+* Spring Boot then reads `application.properties` (in `src/main/resources`). It finds the port `server.port=8080` (if set) and connects to MySQL using `spring.datasource.url`.
 
 ### Step 3: Scanning for Annotations
 * Spring Boot scans your entire project for special words (Annotations). 
@@ -23,7 +23,7 @@ When you run `mvn spring-boot:run` or start the app in your IDE, this is the exa
 
 ### Step 4: `DataInitializer.java` (Optional but common)
 * **Where is it?** `src/main/java/com/crumb/bakery/config/DataInitializer.java` (Based on your open files, you have this!)
-* **What it does:** Because this class likely implements `CommandLineRunner`, Spring Boot automatically runs its `run()` method right after the app finishes starting up. This is usually where you write code to insert default Admin users or initial products into MongoDB so your database isn't empty.
+* **What it does:** Because this class likely implements `CommandLineRunner`, Spring Boot automatically runs its `run()` method right after the app finishes starting up. This is usually where you write code to insert default Admin users or initial products into MySQL so your database isn't empty.
 
 ### Step 5: Web Server Ready
 * The embedded Tomcat Server finishes starting on port `8080`. The console prints `"Tomcat started on port(s): 8080 (http)"`. The app is now waiting for customers!
@@ -73,19 +73,19 @@ Let's trace exactly what happens when a customer opens their browser and visits 
 
 ### Step 6: `ProductRepository.java` (The Database Manager)
 1. Execution jumps to `src/main/java/com/crumb/bakery/repository/ProductRepository.java`.
-2. This is simply an Interface extending `MongoRepository`. You are calling a method named `findByAvailableTrueOrderBySortOrderAsc()`.
-3. **Magic happens here:** Spring Data looks at the name of your method. It translates the English words into a MongoDB instruction: "Find all products where available is true, and sort them in ascending order by sortOrder".
-4. Spring Boot opens the connection to MongoDB and fires the query.
+2. This is simply an Interface extending `JpaRepository`. You are calling a method named `findByAvailableTrueOrderBySortOrderAsc()`.
+3. **Magic happens here:** Spring Data looks at the name of your method. It translates the English words into a MySQL SQL query: "Find all products where available is true, and sort them in ascending order by sort_order".
+4. Spring Boot opens the connection to MySQL and fires the query.
 
-### Step 7: The Database (MongoDB)
-1. MongoDB searches the `products` collection.
-2. It finds all the matching JSON/BSON documents.
+### Step 7: The Database (MySQL)
+1. MySQL searches the `products` table.
+2. It finds all the matching rows.
 3. It returns the raw data back to Spring Boot.
 
 ### Step 8: `Product.java` (The Blueprint / Model)
-1. Spring Boot receives the raw data from MongoDB.
+1. Spring Boot receives the raw data from MySQL.
 2. It looks at your `Product.java` model blueprint in `src/main/java/com/crumb/bakery/model/Product.java`.
-3. It maps the database fields exactly to your Java variables (e.g., the MongoDB `price` goes into `Double price`, `name` goes to `String name`). It creates a `List<Product>` (a list of fully formed Java objects).
+3. It maps the database fields exactly to your Java variables (e.g., the MySQL `price` goes into `Double price`, `name` goes to `String name`). It creates a `List<Product>` (a list of fully formed Java objects).
 
 ### Step 9: The Return Journey (Back up the chain)
 1. The `ProductRepository` hands the `List<Product>` to the `ProductService`.
@@ -129,11 +129,11 @@ What if the frontend sends a bad request (e.g., placing an order with no name or
 ## 📝 Summary Diagram
 Whenever you write new features, remember this **left-to-right** data flow:
 
-`Browser (HTML/JS)` ➡️ `Controller (Java)` ➡️ `Service (Java)` ➡️ `Repository (Java)` ➡️ `Database (MongoDB)`
+`Browser (HTML/JS)` ➡️ `Controller (Java)` ➡️ `Service (Java)` ➡️ `Repository (Java)` ➡️ `Database (MySQL)`
 
 And the response always returns **right-to-left**:
 
-`Database (MongoDB)` ➡️ `Repository (Java)` ➡️ `Service (Java)` ➡️ `Controller (Java)` ➡️ `Jackson (JSON)` ➡️ `Browser (HTML/JS)`
+`Database (MySQL)` ➡️ `Repository (Java)` ➡️ `Service (Java)` ➡️ `Controller (Java)` ➡️ `Jackson (JSON)` ➡️ `Browser (HTML/JS)`
 
 ---
 
@@ -144,7 +144,7 @@ As a beginner, you don't need to memorize everything at once. Focus on these 5 *
 2. **`@GetMapping` / `@PostMapping`**: Maps a specific URL (like `/api/products`) to a Java function, telling Spring exactly when to run that function.
 3. **`@Autowired`**: The magic connector. It asks Spring to give you an object you need (like getting the Repository inside the Service) without you ever having to type `new ObjectName()`.
 4. **`@Service`**: Marks a class as the place where your business rules and logic live (The Chef).
-5. **`@Document(collection="...")`**: Tells the database that this Java class should be saved directly as a document inside a MongoDB collection.
+5. **`@Entity` / `@Table(name="...")`**: Tells Spring Data JPA that this Java class maps directly to a MySQL database table.
 
 ---
 
@@ -152,7 +152,7 @@ As a beginner, you don't need to memorize everything at once. Focus on these 5 *
 Whenever you want to add something new to your bakery (like a `Review` system or a `PromoCode` feature), follow this exact order:
 
 1. Create **`Model`**: Define what it is (`Review.java`).
-2. Create **`Repository`**: Make a way to save it to MongoDB (`ReviewRepository.java`).
+2. Create **`Repository`**: Make a way to save it to MySQL (`ReviewRepository.java`).
 3. Create **`Service`**: Write the rules for it (`ReviewService.java`).
 4. Create **`Controller`**: Expose it to the internet (`ReviewController.java`).
 5. Update **`Frontend`**: Use `fetch()` in your HTML/JS to connect the UI to the Controller.
