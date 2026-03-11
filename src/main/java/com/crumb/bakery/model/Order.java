@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -36,16 +38,20 @@ public class Order {
 
     private String deliveryDate;
 
-    @Min(value = 1) @Max(value = 50)
+    @Min(value = 1)
+    @Max(value = 50)
     private int quantity = 1;
 
     private double unitPrice;
     private double totalPrice;
     private String notes;
-    private String optionalItems;  // e.g. "extra cream, no onion"
+    private String optionalItems; // e.g. "extra cream, no onion"
 
     // pending | confirmed | preparing | out-for-delivery | delivered | cancelled
     private String status = "pending";
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> items = new ArrayList<>();
 
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();

@@ -28,16 +28,24 @@ public class Product {
     @DecimalMin(value = "0.01")
     private Double price;
 
-    private String category;   // brownie | cake | cupcake | special
+    private String category; // brownie | cake | cupcake | special
+    private String imageUrl; // Added from UI form
     private String imageEmoji;
     private String badge;
     private boolean available = true;
     private int sortOrder = 0;
 
+    @Min(value = 0, message = "Stock cannot be negative")
+    private int stock = 0; // Added from UI form & requirements
+
+    private boolean bestSeller = false;
+    private boolean eggless = false;
+    private boolean glutenFree = false;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
     public Product(String name, String description, double price,
-                   String category, String imageEmoji, String badge) {
+            String category, String imageEmoji, String badge) {
         this.name = name;
         this.description = description;
         this.price = price;

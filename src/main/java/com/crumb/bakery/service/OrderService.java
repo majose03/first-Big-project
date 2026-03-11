@@ -14,9 +14,11 @@ public class OrderService {
     @Autowired
     private OrderRepository repo;
 
+    @Autowired
+    private BakeryService bakeryService;
+
     private static final Set<String> VALID = Set.of(
-        "pending","confirmed","preparing","out-for-delivery","delivered","cancelled"
-    );
+            "pending", "confirmed", "preparing", "out-for-delivery", "delivered", "cancelled");
 
     // ==========================================
     // ADVANCED DSA: Custom Thread-Safe LRU Cache
@@ -26,7 +28,11 @@ public class OrderService {
         Long key;
         Order value;
         LruNode prev, next;
-        LruNode(Long key, Order value) { this.key = key; this.value = value; }
+
+        LruNode(Long key, Order value) {
+            this.key = key;
+            this.value = value;
+        }
     }
 
     private static class OrderLruCache {
@@ -110,10 +116,8 @@ public class OrderService {
         order.setStatus("pending");
         order.setCreatedAt(LocalDateTime.now());
         order.setUpdatedAt(LocalDateTime.now());
-        if (order.getUnitPrice() > 0)
-            order.setTotalPrice(order.getUnitPrice() * order.getQuantity());
-        
-        Order saved = repo.save(order);
+
+        Order saved = bakeryService.processNewOrder(order);
         orderCache.put(saved.getId(), saved); // Add to LRU
         return saved;
     }
@@ -144,12 +148,12 @@ public class OrderService {
     public Order updateStatus(Long id, String status) {
         if (!VALID.contains(status.toLowerCase()))
             throw new IllegalArgumentException("Invalid status: " + status);
-        
+
         Order o = getOrderById(id)
-            .orElseThrow(() -> new RuntimeException("Order not found: " + id));
+                .orElseThrow(() -> new RuntimeException("Order not found: " + id));
         o.setStatus(status.toLowerCase());
         o.setUpdatedAt(LocalDateTime.now());
-        
+
         Order saved = repo.save(o);
         orderCache.put(id, saved); // Update LRU Cache
         return saved;
@@ -162,9 +166,12 @@ public class OrderService {
 
     public Map<String, Long> getStatusSummary() {
         Map<String, Long> m = new LinkedHashMap<>();
-        for (String s : VALID) m.put(s, repo.countByStatus(s));
+        for (String s : VALID)
+            m.put(s, repo.countByStatus(s));
         return m;
     }
 
-    public long getTotalOrderCount() { return repo.count(); }
+    public long getTotalOrderCount() {
+        return repo.count();
+    }
 }
