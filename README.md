@@ -23,6 +23,12 @@
 - **Analytics tab** — revenue KPIs, status breakdown chart, top products, 7-day breakdown, product performance table
 - Auto-refresh every 30 seconds
 
+### 🚀 Advanced Backend Features
+- **Data Structures (DSA)** — `Trie` for O(M) fast Product Search autocomplete, and `LRU Cache` for O(1) fast Order lookups.
+- **Docker Support** — Dual-stage Dockerfile for optimized production image building.
+- **Spring Profiles** — Supports seamless swapping between local MySQL (`dev`) and Online Aiven MySQL (`prod`).
+- **Security** — Spring Security config to protect API routes and handle admin sessions.
+
 ---
 
 ## 🛠️ Tech Stack
@@ -93,12 +99,33 @@ CREATE DATABASE bakerydb;
 
 The application is pre-configured to log in as user `root` with password `root`. Update `src/main/resources/application.properties` if your credentials differ.
 
-### 3. Run the app
+### 3. Database Configuration (Spring Profiles)
+The project is configured to use two different databases depending on your environment profile:
+
+- **Local Development (`dev`):** Connects to `localhost:3306/bakerydb`.
+- **Production (`prod`):** Connects to the Aiven Online MySQL database. Needs the `AIVEN_DB_PASSWORD` environment variable.
+
+You can switch by changing `spring.profiles.active` in `application.properties` or by running the app with a specific flag.
+
+### 4. Run the app
+To run locally:
 ```bash
 mvn spring-boot:run
 ```
 
+To run with the online database (you must configure `AIVEN_DB_PASSWORD` in your terminal):
+```bash
+set AIVEN_DB_PASSWORD=your_password
+mvn spring-boot:run -Dspring-boot.run.profiles=prod
+```
+
 App starts at: **http://localhost:8080**
+
+### 🐳 Run using Docker
+```bash
+docker build -t crumb-bakery .
+docker run -p 8080:8080 -e AIVEN_DB_PASSWORD="your_password" -e SPRING_PROFILES_ACTIVE=prod crumb-bakery
+```
 
 ---
 

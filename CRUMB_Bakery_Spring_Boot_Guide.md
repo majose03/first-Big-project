@@ -69,13 +69,15 @@ Let's trace exactly what happens when a customer opens their browser and visits 
        return repo.findByAvailableTrueOrderBySortOrderAsc();
    }
    ```
-3. The Service layer is where you put business rules. Here, you are making sure the customer only sees "available" products by calling that specific method on the repository.
+3. The Service layer is where you put business rules. Here, you are making sure the customer only sees "available" products.
+4. **advanced DSA Routing:** Some functions in `ProductService` (like searching) actually use a **Trie Prefix Tree** algorithm instead of constantly querying the database for autocomplete, while `OrderService` uses a **Custom Thread-Safe LRU Cache** algorithm for fetching data in O(1) time complexity.
 
-### Step 6: `ProductRepository.java` (The Database Manager)
+### Step 6: `ProductRepository.java` & Profiles (The Database Manager)
 1. Execution jumps to `src/main/java/com/crumb/bakery/repository/ProductRepository.java`.
 2. This is simply an Interface extending `JpaRepository`. You are calling a method named `findByAvailableTrueOrderBySortOrderAsc()`.
-3. **Magic happens here:** Spring Data looks at the name of your method. It translates the English words into a MySQL SQL query: "Find all products where available is true, and sort them in ascending order by sort_order".
-4. Spring Boot opens the connection to MySQL and fires the query.
+3. **Magic happens here:** Spring Data looks at the name of your method. It translates the English words into a SQL query: "Find all products where available is true, and sort them".
+4. Spring Boot opens the connection to the Database using the credentials provided in `application.properties`. 
+   *(Note: The `dev` profile uses your local MySQL installation, while the `prod` profile uses the online Aiven DB credentials provided by `AIVEN_DB_PASSWORD`)*.
 
 ### Step 7: The Database (MySQL)
 1. MySQL searches the `products` table.
